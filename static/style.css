@@ -1,0 +1,92 @@
+body { 
+    font-family: sans-serif; 
+    margin: 20px;
+}
+
+.card { 
+    background: #f4f4f4; 
+    border-radius: 5px; 
+    padding: 20px; 
+    margin-bottom: 20px; 
+}
+
+table { 
+    border-collapse: collapse; 
+    width: 100%; 
+}
+
+th, td { 
+    border: 1px solid #ddd; 
+    padding: 8px; 
+    text-align: left; 
+}
+
+th { 
+    background-color: #eee; 
+}
+
+pre { 
+    background: #fff; 
+    padding: 10px; 
+    overflow: auto; 
+}
+
+label { 
+    display: inline-block; 
+    width: 180px; 
+    margin: 10px 0; 
+}
+
+input[type="text"], input[type="number"], select { padding: 5px; width: 250px; }
+
+.capabilities label { 
+    width: auto; 
+    margin-right: 15px; 
+}
+
+button { 
+    padding: 8px 15px; 
+    background: #007bff; 
+    color: white; 
+    border: none; 
+    border-radius: 3px; 
+    cursor: pointer; 
+    margin-right: 10px; 
+}
+
+button:hover { 
+    background: #0056b3; 
+}
+
+#configStatus { 
+    margin-top: 10px; 
+    font-weight: bold; 
+}
+
+.json-button { 
+    margin-bottom: 10px;
+    margin: 1em 0em 1em 0em;
+}
+
+.json-data { 
+    display: none;
+    margin-top: 10px;
+}
+
+#graphContainer { 
+    height: 600px; 
+    border: 1px solid #ccc; 
+    background: #fff; 
+}
+
+.loading { 
+    color: blue; 
+}
+
+.success { 
+    color: green; 
+}
+
+.error { 
+    color: red; 
+}
