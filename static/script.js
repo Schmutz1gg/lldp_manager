@@ -94,7 +94,7 @@ function loadLocalInfo() {
             rawChassisData = data;
             const chassis = data['local-chassis']?.chassis;
             if (chassis) {
-                let html = '<table><tr><th>Parameter</th><th>Value</th></tr>';
+                let html = '<table><tr><th>Parameter</th><th>Value</th></tr><tbody>';
                 for (let key in chassis) {
                     const item = chassis[key];
                     html += `<tr><td>Chassis ID</td><td>${item.id.type} ${item.id.value}</td></tr>`;
@@ -103,7 +103,7 @@ function loadLocalInfo() {
                     html += `<tr><td>Management IP</td><td>${item['mgmt-ip'].join(', ')}</td></tr>`;
                     html += `<tr><td>Capabilities</td><td>${item.capability.map(c => `${c.type}:${c.enabled ? ' on' : ' off'}`).join('<br>')}</td></tr>`;
                 }
-                html += '</table>';
+                html += '</tbody></table>';
                 document.getElementById('local-info-container').innerHTML = html;
             } else {
                 document.getElementById('local-info-container').innerHTML = 'No data';
@@ -166,12 +166,39 @@ function loadPortsInfo(retries = 2, delay = 500) {
         });
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+        if (m === '&') return '&amp;';
+        if (m === '<') return '&lt;';
+        if (m === '>') return '&gt;';
+        return m;
+    }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+        return c;
+    });
+}
+
+// Функция создания таблицы полной конфигурации текущего устройства
+function renderConfigTable(config) {
+    if (!config || Object.keys(config).length === 0) {
+        return '<p>No configuration data</p>';
+    }
+    let html = '<table class="config-table" style="width: 100%; table-layout: fixed;"><thead><tr><th style="width: 30%;">Property</th><th style="width: 70%;">Value</th></tr></thead><tbody>';
+    for (let key in config) {
+        let value = config[key];
+        let displayValue = (typeof value === 'object') ? JSON.stringify(value, null, 2) : String(value);
+        html += `<tr><td>${escapeHtml(key)}</td><td>${escapeHtml(displayValue)}</td></tr>`;
+    }
+    html += '</tbody></table>';
+    return html;
+}
+
 function loadConfig() {
     fetch('/api/config')
         .then(response => response.json())
         .then(data => {
             rawConfigData = data;
-            document.getElementById('configDisplay').textContent = JSON.stringify(data, null, 2);
+            document.getElementById('configTableContainer').innerHTML = renderConfigTable(data.configuration.config);
             document.getElementById('config-json').textContent = JSON.stringify(data, null, 2);
             const cfg = data.configuration?.config;
             if (cfg) {
@@ -197,7 +224,7 @@ function loadConfig() {
         })
         .catch(error => {
             console.error('Error loading config:', error);
-            document.getElementById('configDisplay').textContent = 'Error loading config: ' + error;
+            document.getElementById('configTableContainer').innerHTML = '<p>Error loading config: ' + escapeHtml(error) + '</p>';
         });
 }
 
@@ -421,4 +448,4 @@ loadNeighbors();
 loadLocalInfo();
 loadPortsInfo();
 loadPortsControls();
-setInterval(loadNeighbors, 30000); // Загружаю соседей каждые 30 сек, если до этого неюыло reload
+setInterval(loadNeighbors, 30000); // Загружаю соседей каждые 30 сек, если до этого небыло reload
